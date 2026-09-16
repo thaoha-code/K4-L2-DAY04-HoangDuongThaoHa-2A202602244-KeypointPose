@@ -55,26 +55,28 @@ Khớp lệch `%v=1` nhiều nhất giữa hai bảng đếm:
 
 Luật mới đã bổ sung vào `GUIDELINE_MINI.md` sau khi thống nhất:
 
-<!-- Viết một rule kiểm chứng được: điều kiện nhìn thấy/căn cứ vị trí → chọn v=1 hoặc v=0.
-Không chỉ ghi “cẩn thận hơn khi gán”. -->
-
 ## 4. Model
 
-| Chỉ số       | yolo26n-pose gốc | Sau fine-tune |   Chênh |
-| -------------- | ----------------: | ------------: | -------: |
-| pose_mAP50     |          [Điền] |      [Điền] | [Điền] |
-| pose_mAP50-95  |          [Điền] |      [Điền] | [Điền] |
-| pose_precision |          [Điền] |      [Điền] | [Điền] |
-| pose_recall    |          [Điền] |      [Điền] | [Điền] |
-| box_mAP50-95   |          [Điền] |      [Điền] | [Điền] |
+| Chỉ số       | yolo26n-pose gốc | Sau fine-tune |  Chênh |
+| -------------- | ----------------: | ------------: | ------: |
+| pose_mAP50     |            0.8450 |        0.8450 | +0.0000 |
+| pose_mAP50-95  |            0.6853 |        0.6908 | +0.0055 |
+| pose_precision |            0.9734 |        0.9792 | +0.0058 |
+| pose_recall    |            0.8462 |        0.8462 | +0.0000 |
+| box_mAP50-95   |            0.8119 |        0.8041 | -0.0078 |
 
 ### Trả lời năm câu hỏi ở cuối notebook
 
-1. `pose_mAP50-95` thay đổi bao nhiêu? [Điền số sau khi chạy Colab]
-2. `box_mAP` và `pose_mAP` chênh nhau bao nhiêu? [Điền số sau khi chạy Colab]
-3. Một ảnh test model đoán sai: [Điền sau khi quan sát ảnh visualize trên Colab]
-4. Ảnh nào có OKS thấp nhất giữa nhãn của bạn và model? [Điền sau khi chạy script so sánh]
-5. Ảnh bạn gán tệ nhất có cũng là ảnh model đoán tệ nhất không? [Điền phân tích]
+1. `pose_mAP50-95` thay đổi bao nhiêu?
+   `pose_mAP50-95` tăng nhẹ 0.0055 (từ 0.6853 lên 0.6908). Việc chỉ dùng 20 ảnh là rất nhỏ, nhưng model cũng đã học được thêm một chút về đặc trưng tạo dáng từ nhãn để cải thiện độ chính xác tọa độ khớp, dù việc này làm giảm nhẹ khả năng bắt box tổng thể (`box_mAP` giảm 0.0078).
+2. `box_mAP` và `pose_mAP` chênh nhau bao nhiêu? Model tìm *người* dễ hơn hay tìm *khớp* dễ hơn? Vì sao?
+   Chênh lệch giữa `box_mAP50-95` (0.8041) và `pose_mAP50-95` (0.6908) là khoảng 0.1133. Model tìm *người* (bounding box) dễ hơn nhiều so với tìm *khớp* (pose). Vì khoanh một vùng chứa toàn bộ cơ thể người là tác vụ tổng quát và dễ nhận diện hơn so với việc định vị chính xác tọa độ x, y của 17 khớp nối bé xíu bên trong, nhất là khi tay chân hay bị vắt chéo hoặc che khuất.
+3. Một ảnh test model đoán sai: Ảnh ở test_03, lỗi lệch nhẹ (chấm gần đúng khớp).
+4. Ảnh nào có OKS thấp nhất giữa nhãn của bạn và model? Ảnh có OKS thấp nhất là **`train_12.jpg`**
+5. Ảnh bạn gán tệ nhất có cũng là ảnh model đoán tệ nhất không? Ảnh gán tệ nhất là (`train_12.jpg`) cũng là ảnh model dự đoán tệ nhất. Điều này cho thấy bức ảnh có độ khó rất cao. Khi một dữ liệu đầu vào quá nhiễu hoặc bất thường, cả con người (người gán nhãn) và Trí tuệ nhân tạo (model) đều gặp khó khăn trong việc định vị chính xác tọa độ khớp.
+
+<!-- Viết một rule kiểm chứng được: điều kiện nhìn thấy/căn cứ vị trí → chọn v=1 hoặc v=0.
+Không chỉ ghi “cẩn thận hơn khi gán”. -->
 
 ## 5. Một rule evidence bạn đã dùng
 
